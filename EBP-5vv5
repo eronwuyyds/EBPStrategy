@@ -1,0 +1,26 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Eronbluev2
+
+//@version=6
+indicator("EBP - 5vv5", overlay = true)
+
+highPrevious = high[1]
+lowPrevious = low[1]
+highCurrent = high
+lowCurrent = low
+openBarPrevious = open[1]
+closeBarPrevious = close[1]
+openBarCurrent = open
+closeBarCurrent = close
+
+//If current bar open is less than equal to the previous bar close AND current bar open is less than previous bar open AND current bar close is greater than previous bar open THEN True
+bullishEngulfing = (openBarCurrent <= closeBarPrevious) and (openBarCurrent < openBarPrevious) and (closeBarCurrent > openBarPrevious) and (lowCurrent <= lowPrevious)
+//If current bar open is greater than equal to previous bar close AND current bar open is greater than previous bar open AND current bar close is less than previous bar open THEN True
+bearishEngulfing = (openBarCurrent >= closeBarPrevious) and (openBarCurrent > openBarPrevious) and (closeBarCurrent < openBarPrevious) and (highCurrent > highPrevious)
+
+//bullishEngulfing/bearishEngulfing return a value of 1 or 0; if 1 then plot on chart, if 0 then don't plot
+plotshape(bullishEngulfing, style = shape.triangleup, location = location.belowbar, color = color.green, size = size.tiny)
+plotshape(bearishEngulfing, style = shape.triangledown , location = location.abovebar, color = color.red, size = size.tiny)
+
+alertcondition(bullishEngulfing, title = "Bullish", message = "[CurrencyPair] [TimeFrame], Bullish")
+alertcondition(bearishEngulfing, title = "Bearish", message = "[CurrencyPair] [TimeFrame], Bearish")
